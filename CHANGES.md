@@ -1,3 +1,8 @@
+# Version 1.3.0
+
+## Features
+- Update Update Document API to check X-Appwrite-Timestamp header [#5024](https://github.com/appwrite/appwrite/pull/5024)
+
 # Version 1.2.1
 ## Features
 

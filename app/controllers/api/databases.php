@@ -2279,6 +2279,7 @@ App::patch('/v1/databases/:databaseId/collections/:collectionId/documents/:docum
         }
 
         // Read permission should not be required for update
+        /** @var Document */
         $document = Authorization::skip(fn() => $dbForProject->getDocument('database_' . $database->getInternalId() . '_collection_' . $collection->getInternalId(), $documentId));
 
         if ($document->isEmpty()) {
