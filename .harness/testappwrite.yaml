@@ -35,3 +35,74 @@ pipeline:
                     with:
                       fetch-depth: 2
                       submodules: recursive
+              - step:
+                  type: Action
+                  name: Set up Docker Buildx
+                  identifier: Set_up_Docker_Buildx
+                  spec:
+                    uses: docker/setup-buildx-action@v2
+                  when:
+                    stageStatus: All
+                  failureStrategies: []
+              - step:
+                  type: Action
+                  name: Build Appwrite
+                  identifier: Build_Appwrite
+                  spec:
+                    uses: docker/build-push-action@v3
+                    with:
+                      context: .
+                      push: "false"
+                      tags: appwrite-dev
+                      load: "true"
+                      cache-from: type=gha
+                      cache-to: type=gha,mode=max
+                      build-args: |
+                        DEBUG=false
+                        TESTING=true
+                        VERSION=dev
+              - step:
+                  type: Run
+                  name: Start Appwrite
+                  identifier: Start_Appwrite
+                  spec:
+                    shell: Sh
+                    command: |2-
+                              docker compose up -d
+                              sleep 30
+                  when:
+                    stageStatus: All
+                  failureStrategies: []
+              - step:
+                  type: Run
+                  name: Doctor
+                  identifier: Doctor
+                  spec:
+                    shell: Sh
+                    command: |
+                      docker compose exec -T appwrite doctor
+                  when:
+                    stageStatus: All
+                  failureStrategies: []
+              - step:
+                  type: Run
+                  name: Environment Variables
+                  identifier: Environment_Variables
+                  spec:
+                    shell: Sh
+                    command: |
+                      docker compose exec -T appwrite vars
+                  when:
+                    stageStatus: All
+                  failureStrategies: []
+              - step:
+                  type: Run
+                  name: Run Tests
+                  identifier: Run_Tests
+                  spec:
+                    shell: Sh
+                    command: |
+                      docker compose exec -T appwrite test --debug
+                  when:
+                    stageStatus: All
+                  failureStrategies: []
