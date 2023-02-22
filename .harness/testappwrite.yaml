@@ -1,0 +1,37 @@
+pipeline:
+  name: test-appwrite
+  identifier: testappwrite
+  projectIdentifier: NgLabs
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: gitconnectordhruba
+        repoName: appwrite
+        build: <+input>
+  stages:
+    - stage:
+        name: Unit and E2E
+        identifier: Unit_and_E2E
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Action
+                  name: Checkout repository
+                  identifier: Checkout_repository
+                  spec:
+                    uses: actions/checkout@v3
+                    with:
+                      fetch-depth: 2
+                      submodules: recursive
