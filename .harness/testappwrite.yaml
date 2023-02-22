@@ -14,7 +14,6 @@ pipeline:
     - stage:
         name: Unit and E2E
         identifier: Unit_and_E2E
-        description: ""
         type: CI
         spec:
           cloneCodebase: true
@@ -26,6 +25,15 @@ pipeline:
             spec: {}
           execution:
             steps:
+              - step:
+                  type: Background
+                  name: Background
+                  identifier: Background
+                  spec:
+                    connectorRef: harnessnew
+                    image: docker:dind
+                    shell: Sh
+                    privileged: true
               - step:
                   type: Action
                   name: Checkout repository
@@ -106,3 +114,6 @@ pipeline:
                   when:
                     stageStatus: All
                   failureStrategies: []
+          sharedPaths:
+            - /var/lib/docker
+            - /var/run
